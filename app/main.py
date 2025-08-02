@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.params import *
 
-from app.schema.Book_Schema import Book
+from app.schemas.Book_Schema import Book
 
 app = FastAPI()
 
@@ -61,6 +61,12 @@ async def delete_book(book_id: int, response: Response):
             return None
     response.status_code = status.HTTP_404_NOT_FOUND
     return HTTPException(status_code=404, detail="Book not found")
+
+@app.delete("/books")
+async def delete_books(response: Response):
+    books.clear()
+    response.status_code = status.HTTP_204_NO_CONTENT
+    return None
 
 @app.put("/books/{book_id}")
 async def update_book(book_id: int, book: Book, response: Response):
