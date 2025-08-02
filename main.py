@@ -1,6 +1,4 @@
-from operator import indexOf
-
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.params import *
 
 from app.schema.Book_Schema import Book
@@ -20,7 +18,7 @@ books = [
 ]
 
 @app.post("/books")
-async def create_book(book: Book = Body(...)):
+async def create_book(book: Book = Body(...), response: Response = Response()):
     book.model_dump()
 
     for n in books:
@@ -36,6 +34,7 @@ async def create_book(book: Book = Body(...)):
         "rating": book.rating,
     }
     books.append(new_book)
+    response.status_code = status.HTTP_201_CREATED
     return {
         "response": {
             "Book Details": books[-1],
@@ -43,19 +42,34 @@ async def create_book(book: Book = Body(...)):
    }
 
 @app.get("/books")
-async def read_books():
+async def read_books(response: Response):
+    response.status_code = status.HTTP_200_OK
     return books
 
 @app.get("/books/{book_id}")
-async def read_book(book_id: int):
+async def read_book(book_id: int, response: Response):
     book = books[book_id - 1]
+    response.status_code = status.HTTP_200_OK
     return Book(**book)
 
 @app.delete("/books/{book_id}")
-async def delete_book(book_id: int):
+async def delete_book(book_id: int, response: Response):
     for n in books:
         if n["id"] == book_id:
             books.remove(n)
-            return books
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return None
+    response.status_code = status.HTTP_404_NOT_FOUND
     return HTTPException(status_code=404, detail="Book not found")
+
+@app.put("/books/{book_id}")
+async def update_book(book_id: int, book: Book, response: Response):
+    for n in books:
+        if n["id"] == book_id:
+            n.update(book)
+            response.status_code = status.HTTP_200_OK
+            return Book(**n)
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return HTTPException(status_code=404, detail="Book not found")
 
