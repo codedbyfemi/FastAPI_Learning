@@ -69,7 +69,6 @@ async def update_book(book_id: int, book: Book, response: Response):
             n.update(book)
             response.status_code = status.HTTP_200_OK
             return Book(**n)
-        else:
-            response.status_code = status.HTTP_404_NOT_FOUND
-            return HTTPException(status_code=404, detail="Book not found")
 
+    response.status_code = status.HTTP_404_NOT_FOUND
+    return HTTPException(status_code=404, detail="Book not found")
