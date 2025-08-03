@@ -68,6 +68,10 @@ async def delete_books(response: Response):
     response.status_code = status.HTTP_204_NO_CONTENT
     return None
 
+'''
+@:return book
+@:param book_id
+'''
 @app.put("/books/{book_id}")
 async def update_book(book_id: int, book: Book, response: Response):
     for n in books:
