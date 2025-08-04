@@ -11,7 +11,7 @@ books = [
     {
         "id": 1,
         "title": "The British sports",
-        "author": "NAME",
+        "author": "<NAME>",
         "genre": "Sci-Fi",
         "year": 2000,
         "completed": False,
