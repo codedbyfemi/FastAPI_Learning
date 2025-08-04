@@ -34,6 +34,7 @@ async def create_book(book: Book = Body(...), response: Response = Response()):
         "author": book.author,
         "genre": book.genre,
         "year": book.year,
+        "completed": book.completed,
         "rating": book.rating,
     }
     books.append(new_book)
