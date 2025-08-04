@@ -12,5 +12,7 @@ class Book(BaseModel):
     genre: str
     # Genre
     year: int
+    # completed
+    completed: Optional[bool] = False
     # Rating
     rating: Optional[float] = None

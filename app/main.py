@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.params import *
+from scalar_fastapi import get_scalar_api_reference
+
 
 from app.schemas.Book_Schema import Book
 
@@ -12,6 +14,7 @@ books = [
         "author": "<NAME>",
         "genre": "Sci-Fi",
         "year": 2000,
+        "completed": False,
         "rating": 4.5,
 
     }
@@ -48,9 +51,12 @@ async def read_books(response: Response):
 
 @app.get("/books/{book_id}")
 async def read_book(book_id: int, response: Response):
-    book = books[book_id - 1]
-    response.status_code = status.HTTP_200_OK
-    return Book(**book)
+    for n in books:
+        if n["id"] == book_id:
+            response.status_code = status.HTTP_200_OK
+            return Book(**n)
+    response.status_code = status.HTTP_404_NOT_FOUND
+    return HTTPException(status_code=404, detail="Book not found")
 
 @app.delete("/books/{book_id}")
 async def delete_book(book_id: int, response: Response):
@@ -68,10 +74,7 @@ async def delete_books(response: Response):
     response.status_code = status.HTTP_204_NO_CONTENT
     return None
 
-'''
-@:return book
-@:param book_id
-'''
+
 @app.put("/books/{book_id}")
 async def update_book(book_id: int, book: Book, response: Response):
     for n in books:
@@ -79,6 +82,22 @@ async def update_book(book_id: int, book: Book, response: Response):
             n.update(book)
             response.status_code = status.HTTP_200_OK
             return Book(**n)
-
     response.status_code = status.HTTP_404_NOT_FOUND
     return HTTPException(status_code=404, detail="Book not found")
+
+@app.patch("/books/{book_id}")
+async def update_book(book_id: int, book: dict[str, Any], response: Response):
+    for n in books:
+        if n["id"] == book_id:
+            n.update(book)
+            response.status_code = status.HTTP_200_OK
+            return Book(**n)
+    response.status_code = status.HTTP_404_NOT_FOUND
+    return HTTPException(status_code=404, detail="Book not found")
+
+@app.get("/scalar", include_in_schema=False)
+async def get_scalar_docs():
+    return get_scalar_api_reference(
+        openapi_url=app.openapi_url,
+        title="Scalar API",
+    )
