@@ -63,7 +63,7 @@ async def read_book(book_id: int, response: Response):
 async def delete_book(book_id: int, response: Response):
     for n in books:
         if n["id"] == book_id:
-            books.remove(n)
+            books.pop(n)
             response.status_code = status.HTTP_204_NO_CONTENT
             return None
     response.status_code = status.HTTP_404_NOT_FOUND
