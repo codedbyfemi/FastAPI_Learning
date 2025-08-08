@@ -20,22 +20,16 @@ class Book(BaseModel):
     # completed
     completed: Optional[str] = ReadingStatus.UNREAD
     # Rating
-    rating: Optional[float] = None
+    rating: Optional[float] = Field(le=5)
 
 
-class UpdateBook(BaseModel):
-    # Book title
-    title: Optional[str] = None
-    # Author
-    author: Optional[str] = None
-    # publish date
-    genre: Optional[str] = None
-    # Genre
-    year: Optional[int] = None
+class UpdateReadingStatus(BaseModel):
     # completed
-    completed: Optional[str] = None
-    # Rating
-    rating: Optional[float] = None
+    completed: ReadingStatus
+
+class SetRating(BaseModel):
+    # rating
+    rating: float = Field(le=5)
 
 
 

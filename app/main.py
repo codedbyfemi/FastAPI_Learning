@@ -3,7 +3,7 @@ from fastapi.params import *
 from scalar_fastapi import get_scalar_api_reference
 
 
-from app.schemas.Book_Schema import Book, UpdateBook, ReadingStatus
+from app.schemas.Book_Schema import Book, ReadingStatus, UpdateReadingStatus
 
 app = FastAPI()
 
@@ -21,7 +21,7 @@ books = [
 ]
 
 @app.post("/books")
-async def create_book(book: Book = Body(...), response: Response = Response()):
+async def create_book(book: Book, response: Response):
     book.model_dump()
 
     for n in books:
@@ -75,7 +75,6 @@ async def delete_books(response: Response):
     response.status_code = status.HTTP_204_NO_CONTENT
     return None
 
-
 @app.patch("/books/rating/{book_id}")
 async def set_rating(book_id: int, book: dict[str, Any], response: Response):
     for n in books:
@@ -87,7 +86,7 @@ async def set_rating(book_id: int, book: dict[str, Any], response: Response):
     return HTTPException(status_code=404, detail="Book not found")
 
 @app.patch("/books/{book_id}")
-async def update_reading_status(book_id: int, book: dict[str, ReadingStatus], response: Response):
+async def update_reading_status(book_id: int, book: UpdateReadingStatus, response: Response):
     for n in books:
         if n["id"] == book_id:
             n.update(book)
