@@ -3,7 +3,7 @@ from fastapi.params import *
 from scalar_fastapi import get_scalar_api_reference
 
 
-from app.schemas.Book_Schema import Book, ReadingStatus, UpdateReadingStatus
+from app.Book_Schema import Book, ReadingStatus, UpdateReadingStatus
 
 app = FastAPI()
 
